@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Kit de Démarrage (Starter) - MERN Décalé - Séance 6 (Finale)
 ## Authentification Full-Stack JWT, Protection des Actions & Déploiement Cloud
 Enseignant : Dr. Abdelweheb GUEDDES - École Polytechnique de Sousse
@@ -25,3 +26,6 @@ Suivez le support PDF **S6_Seance_Interactive_Decale.pdf** inclus dans ce dossie
 1. **client/src/redux/authSlice.js** (Étape 2 - Page 2) : Décommenter loginSuccess et logout.
 2. **client/src/api/axiosClient.js** (Étape 3 - Page 3) : Décommenter l'Intercepteur Axios (Bearer ).
 3. **client/src/components/AuthCard.jsx** (Étape 4 - Page 4) : Décommenter l'appel xiosClient.post('/auth/login', ...) et dispatch(loginSuccess(response.data)).
+=======
+# INTERACTIVE-DECALE-MERN-PROJECT
+>>>>>>> b0c57ae57a42547574e1b4a7cfebd82ca37cef4d
