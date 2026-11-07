@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_jwt_polytechnique_sousse_2026';
 
 // ==============================================================================
@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret_jwt_polytechnique_sousse_20
 // ==============================================================================
 // En production, CLIENT_URL = l'adresse Vercel (ex : https://mon-blog.vercel.app)
 // En local (variable absente), toutes les origines sont acceptées.
-app.use(cors(  '*' ));
+app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
 app.use(express.json());
 
 // ==============================================================================
@@ -23,13 +23,27 @@ app.use(express.json());
 const users = [
   {
     id: 'u1',
+    name: 'Fawz El Houda Ghalba',
+    email: 'fawzelhouda.ghalba@polytechnicien.tn',
+    password: '123456',
+    role: 'Admin'
+  },
+  {
+    id: 'u2',
+    name: 'Amine ESSIDr',
+    email: 'essid@poly.tn',
+    password: '123456',
+    role: 'Auteur'
+  },
+  {
+    id: 'u3',
     name: 'Dr. Abdelweheb GUEDDES',
     email: 'gueddes@poly.tn',
     password: '123456',
     role: 'Admin'
   },
   {
-    id: 'u2',
+    id: 'u4',
     name: 'Aya Ben Amor',
     email: 'aya@poly.tn',
     password: '123456',
@@ -87,9 +101,19 @@ const protect = (req, res, next) => {
 };
 
 // ==============================================================================
+// 3.5. Route Racine / Healthcheck
+// ==============================================================================
+app.get(['/', '/api'], (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'API Express MERN Décalé (Séance 6 - JWT) active et opérationnelle 🚀'
+  });
+});
+
+// ==============================================================================
 // 4. Routes d'Authentification (/api/auth/login & /api/auth/register)
 // ==============================================================================
-app.post('/api/auth/login', (req, res) => {
+app.post(['/api/auth/login', '/auth/login'], (req, res) => {
   const { email, password } = req.body;
 
   const user = users.find(
@@ -108,7 +132,7 @@ app.post('/api/auth/login', (req, res) => {
   res.status(200).json({ user: userInfo, token });
 });
 
-app.post('/api/auth/register', (req, res) => {
+app.post(['/api/auth/register', '/auth/register'], (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Nom, email et mot de passe obligatoires.' });
@@ -139,12 +163,12 @@ app.post('/api/auth/register', (req, res) => {
 // ==============================================================================
 
 // PUBLIQUE : Tout le monde peut lire les articles
-app.get('/api/articles', (req, res) => {
+app.get(['/api/articles', '/articles'], (req, res) => {
   res.status(200).json(articles);
 });
 
 // PROTÉGÉE PAR JWT : Seul un utilisateur connecté peut publier un article
-app.post('/api/articles', protect, (req, res) => {
+app.post(['/api/articles', '/articles'], protect, (req, res) => {
   const { title, category } = req.body;
   if (!title || !title.trim()) {
     return res.status(400).json({ message: 'Le titre de l article est obligatoire.' });
@@ -163,7 +187,7 @@ app.post('/api/articles', protect, (req, res) => {
 });
 
 // PROTÉGÉE PAR JWT : Seul un utilisateur connecté peut supprimer un article
-app.delete('/api/articles/:id', protect, (req, res) => {
+app.delete(['/api/articles/:id', '/articles/:id'], protect, (req, res) => {
   const index = articles.findIndex((a) => a.id === req.params.id);
   if (index === -1) {
     return res.status(404).json({ message: 'Article introuvable.' });
@@ -172,10 +196,14 @@ app.delete('/api/articles/:id', protect, (req, res) => {
   res.status(200).json({ message: 'Article supprimé.', id: deleted.id });
 });
 
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🚀 Serveur MERN Décalé (Séance 6 - JWT) en écoute sur :`);
-  console.log(`👉 http://localhost:${PORT}`);
-  console.log(`🔑 Compte Démo : gueddes@poly.tn | Mot de passe : 123456`);
-  console.log(`====================================================`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`🚀 Serveur MERN Décalé (Séance 6 - JWT) en écoute sur :`);
+    console.log(`👉 http://localhost:${PORT}`);
+    console.log(`🔑 Compte Démo : gueddes@poly.tn | Mot de passe : 123456`);
+    console.log(`====================================================`);
+  });
+}
+
+module.exports = app;

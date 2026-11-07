@@ -20,7 +20,7 @@ export default function ArticleList() {
       const response = await axiosClient.get('/articles');
       dispatch(setArticles(response.data));
     } catch (err) {
-      dispatch(setError('Serveur Express injoignable sur http://localhost:5001.'));
+      dispatch(setError('Serveur Express injoignable ou erreur réseau.'));
     }
   };
 
@@ -40,7 +40,7 @@ export default function ArticleList() {
         <div>
           <h3>Articles Synchronises avec l'API Express</h3>
           <p className="list-subtitle">
-            Donnees recuperees via Axios depuis http://localhost:5001/api/articles
+            Donnees recuperees via Axios depuis l'API REST (/api/articles)
           </p>
         </div>
 

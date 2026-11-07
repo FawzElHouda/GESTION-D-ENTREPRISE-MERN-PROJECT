@@ -1,31 +1,44 @@
-<<<<<<< HEAD
-# Kit de Démarrage (Starter) - MERN Décalé - Séance 6 (Finale)
+# INTERACTIVE-DECALE-MERN-PROJECT
 ## Authentification Full-Stack JWT, Protection des Actions & Déploiement Cloud
-Enseignant : Dr. Abdelweheb GUEDDES - École Polytechnique de Sousse
+**Auteur :** Fawz El Houda Ghalba  
+**Enseignant :** Dr. Abdelweheb GUEDDES - École Polytechnique de Sousse  
+**Cours :** MERN Stack (Groupe Décalé - Séance 6 Finale)
 
-Ce dossier contient le code de départ prêt à l'emploi pour la **Séance 6 (Finale)**. Le code de la Séance 5 (chargement des articles avec Axios + Redux) est déjà fonctionnel.
+---
 
-### 🚀 1. Démarrer le Serveur Express Sécurisé par JWT (Terminal 1)
-`ash
+### 🌐 Déploiement Cloud
+- **Dépôt GitHub :** [https://github.com/FawzElHouda/INTERACTIVE-DECALE-MERN-PROJECT](https://github.com/FawzElHouda/INTERACTIVE-DECALE-MERN-PROJECT)
+- **Application en ligne (Vercel) :** [https://interactive-decale-mern-project.vercel.app](https://interactive-decale-mern-project.vercel.app)
+
+---
+
+### 🚀 1. Démarrer le Serveur Express Sécurisé par JWT (Local)
+```bash
 cd server
 npm install
 npm start
-`
-Compte démo pré-enregistré : gueddes@poly.tn / 123456
+```
+- Port par défaut : `http://localhost:5001`
+- Comptes de test :
+  - `gueddes@poly.tn` / `123456` (Admin)
+  - `fawzelhouda.ghalba@polytechnicien.tn` / `123456` (Admin)
+  - `aya@poly.tn` / `123456` (Auteur)
 
-### 💻 2. Démarrer le Client React (Terminal 2)
-`ash
+---
+
+### 💻 2. Démarrer le Client React (Local)
+```bash
 cd client
 npm install
 npm run dev
-`
-Ouvrez http://localhost:5173 : vous êtes en **Mode Visiteur (Lecture seule)**.
+```
+Ouvrez `http://localhost:5173` dans le navigateur.
 
-### 🛠️ 3. Les 3 Petits Fichiers à Compléter (Blocs // TODO)
-Suivez le support PDF **S6_Seance_Interactive_Decale.pdf** inclus dans ce dossier :
-1. **client/src/redux/authSlice.js** (Étape 2 - Page 2) : Décommenter loginSuccess et logout.
-2. **client/src/api/axiosClient.js** (Étape 3 - Page 3) : Décommenter l'Intercepteur Axios (Bearer ).
-3. **client/src/components/AuthCard.jsx** (Étape 4 - Page 4) : Décommenter l'appel xiosClient.post('/auth/login', ...) et dispatch(loginSuccess(response.data)).
-=======
-# INTERACTIVE-DECALE-MERN-PROJECT
->>>>>>> b0c57ae57a42547574e1b4a7cfebd82ca37cef4d
+---
+
+### 🛠️ 3. Fonctionnalités Implémentées
+1. **Redux Toolkit (`authSlice.js`) :** Gestion d'état global utilisateur et token synchronisé avec `localStorage`.
+2. **Intercepteur Axios (`axiosClient.js`) :** Injection automatique du header `Authorization: Bearer <token>`.
+3. **Carte d'Authentification (`AuthCard.jsx`) :** Connexion JWT avec gestion d'erreurs et bouton compte démo.
+4. **Protection des Actions :** Formulaire de publication et bouton de suppression réservés aux utilisateurs connectés.
+5. **Déploiement Cloud Vercel :** Frontend React Vite + Backend Serverless Express sous `/api`.

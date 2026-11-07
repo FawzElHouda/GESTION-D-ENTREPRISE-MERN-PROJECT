@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 1. Instance Axios pointant vers le serveur Express (ou l'URL Cloud en production)
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5001/api')
 });
 
 // ============================================================================
