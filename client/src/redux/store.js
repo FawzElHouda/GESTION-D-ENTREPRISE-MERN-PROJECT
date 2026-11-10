@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import articleReducer from './articleSlice';
 import authReducer from './authSlice';
+import projectReducer from './projectSlice';
+import taskReducer from './taskSlice';
 
 export const store = configureStore({
   reducer: {
-    articles: articleReducer, // Tiroir 1 : Liste des articles (Séance 5)
-    auth: authReducer         // Tiroir 2 : Utilisateur connecté & Token JWT (Séance 6)
+    auth: authReducer,         // Gestion de session (Utilisateur & Token JWT)
+    projects: projectReducer,   // Entité 2 : Gestion des Projets d'Entreprise
+    tasks: taskReducer         // Entité 3 : Gestion des Tâches Liées (1:N)
   }
 });
