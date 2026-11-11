@@ -87,7 +87,18 @@ app.use((req, res) => {
 });
 
 // ==============================================================================
-// 6. Démarrage du Serveur Express
+// 6. Gestionnaire d'erreurs global (500)
+// ==============================================================================
+app.use((err, req, res, next) => {
+  console.error('❌ Erreur Serveur :', err);
+  res.status(err.status || 500).json({
+    status: 'error',
+    message: err.message || 'Erreur interne du serveur'
+  });
+});
+
+// ==============================================================================
+// 7. Démarrage du Serveur Express
 // ==============================================================================
 if (require.main === module) {
   app.listen(PORT, () => {
