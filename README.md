@@ -286,4 +286,4 @@ GESTION-D-ENTREPRISE-MERN-PROJECT/
 
 ## 🎓 Évaluation & Soutenance
 
-Projet réalisé dans le cadre du module **Architecture MERN Décalée - Séance 6** à l'**École Polytechnique de Sousse**, sous la direction de **Dr. Abdelweheb GUEDDES**.
+Projet réalisé dans le cadre du module **Architecture MERN** à l'**École Polytechnique de Sousse**, sous la direction de **Dr. Abdelweheb GUEDDES**.
