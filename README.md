@@ -19,7 +19,7 @@
 
 | Composant | Hébergeur | URL de Production | Statut |
 |-----------|-----------|-------------------|--------|
-| **Frontend SPA** | **Vercel** | [https://gestion-d-entreprise-mern-project.vercel.app](https://gestion-d-entreprise-mern-project.vercel.app) | 🚀 En ligne |
+| **Frontend SPA** | **Vercel** | [[https://gestion-d-entreprise-mern-project.vercel.app]([https://interactive-decale-mern-project.vercel.app/](https://interactive-decale-mern-project.vercel.app/))]([https://gestion-d-entreprise-mern-project.vercel.app](https://interactive-decale-mern-project.vercel.app/)) | 🚀 En ligne |
 | **Backend API** | **Render** | [https://gestion-d-entreprise-mern-project.onrender.com](https://gestion-d-entreprise-mern-project.onrender.com) | 🟢 Actif |
 | **Healthcheck API** | **Render** | [https://gestion-d-entreprise-mern-project.onrender.com/api](https://gestion-d-entreprise-mern-project.onrender.com/api) | ✅ JSON 200 OK |
 | **Base de Données** | **MongoDB Atlas** | Cluster Cloud M0 (AWS eu-central-1) | 🗄️ Connecté |
