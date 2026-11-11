@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-// 1. Instance Axios pointant vers le serveur Express (ou l'URL Cloud Render en production)
+// 1. Instance Axios pointant vers le serveur Express (/api en production Vercel, ou URL personnalisée via VITE_API_URL)
 const axiosClient = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
-    (import.meta.env.PROD
-      ? 'https://gestion-d-entreprise-mern-project.onrender.com/api'
-      : 'http://localhost:5001/api')
+    (import.meta.env.PROD ? '/api' : 'http://localhost:5001/api')
 });
 
 // ============================================================================
