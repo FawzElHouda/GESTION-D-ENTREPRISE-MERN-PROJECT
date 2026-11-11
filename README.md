@@ -1,273 +1,289 @@
-# 🏢 Gestion d'Entreprise — Projets & Tâches
+# 🏢 Gestion d'Entreprise — Projets & Tâches (MERN Stack)
+
+[![Frontend on Vercel](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel&logoColor=white)](https://gestion-d-entreprise-mern-project.vercel.app)
+[![Backend on Render](https://img.shields.io/badge/Backend-Render-46E3B7?logo=render&logoColor=white)](https://gestion-d-entreprise-mern-project.onrender.com)
+[![Database MongoDB](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248?logo=mongodb&logoColor=white)](https://cloud.mongodb.com)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Redux Toolkit](https://img.shields.io/badge/Redux-Toolkit-764ABC?logo=redux&logoColor=white)](https://redux-toolkit.js.org)
+[![JWT Auth](https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens&logoColor=white)](https://jwt.io)
 
 > **École Polytechnique de Sousse** · Dr. Abdelweheb GUEDDES · Séance 6  
-> **Auteure :** Fawz El Houda Ghalba
-
-Application **MERN Stack** complète de gestion de projets et tâches pour PME, avec authentification JWT, relations 1:N Mongoose avec `.populate()`, et Redux Toolkit.
-
----
-
-## 🌐 Démo en ligne
-
-| Service | URL |
-|---------|-----|
-| **Frontend** (Vercel) | _(à renseigner après déploiement)_ |
-| **Backend** (Render) | _(à renseigner après déploiement)_ |
+> **Auteure :** Fawz El Houda Ghalba  
+> **Dépôt GitHub :** [GESTION-D-ENTREPRISE-MERN-PROJECT](https://github.com/FawzElHouda/GESTION-D-ENTREPRISE-MERN-PROJECT)
 
 ---
 
-## 🗃️ Schéma des Modèles Mongoose
+## 🌐 Liens de Déploiement Cloud (Production)
+
+| Composant | Hébergeur | URL de Production | Statut |
+|-----------|-----------|-------------------|--------|
+| **Frontend SPA** | **Vercel** | [https://gestion-d-entreprise-mern-project.vercel.app](https://gestion-d-entreprise-mern-project.vercel.app) | 🚀 En ligne |
+| **Backend API** | **Render** | [https://gestion-d-entreprise-mern-project.onrender.com](https://gestion-d-entreprise-mern-project.onrender.com) | 🟢 Actif |
+| **Healthcheck API** | **Render** | [https://gestion-d-entreprise-mern-project.onrender.com/api](https://gestion-d-entreprise-mern-project.onrender.com/api) | ✅ JSON 200 OK |
+| **Base de Données** | **MongoDB Atlas** | Cluster Cloud M0 (AWS eu-central-1) | 🗄️ Connecté |
+
+---
+
+## 🏛️ Architecture Globale du Projet
 
 ```
-┌──────────────────────────────────┐
-│              USER                │
-│──────────────────────────────────│
-│ _id, name, email, password       │
-│ role, department                 │
-└───────────────┬──────────────────┘
-                │ 1:N  (createdBy)
-                ▼
-┌──────────────────────────────────┐
-│             PROJECT              │
-│──────────────────────────────────│
-│ _id, title, description          │
-│ status, priority, budget         │
-│ startDate, endDate               │
-│ createdBy  ──► ref: User         │
-└───────────────┬──────────────────┘
-                │ 1:N  (project)
-                ▼
-┌──────────────────────────────────┐
-│              TASK                │
-│──────────────────────────────────│
-│ _id, title, description          │
-│ status, priority, dueDate        │
-│ project    ──► ref: Project      │
-│ assignedTo ──► ref: User         │
-└──────────────────────────────────┘
+               ┌────────────────────────────────────────────────────────┐
+               │              CLIENT (Navigateur Utilisateur)           │
+               └──────────────────────────┬─────────────────────────────┘
+                                          │
+                                          │ Requêtes HTTPS
+                                          ▼
+   ┌────────────────────────────────────────────────────────────────────────────┐
+   │                          FRONTEND (Vercel)                                 │
+   │  • React 19 + Vite 8 + Redux Toolkit (Slices: auth, project, task)         │
+   │  • Axios Client avec intercepteur automatique Authorization: Bearer <JWT> │
+   │  • Rewrites Vercel transparents (/api/* ──► Render API)                    │
+   └──────────────────────────────────────┬─────────────────────────────────────┘
+                                          │
+                                          │ Appels REST API
+                                          ▼
+   ┌────────────────────────────────────────────────────────────────────────────┐
+   │                          BACKEND (Render)                                  │
+   │  • Node.js + Express 4                                                     │
+   │  • Middleware de sécurité CORS dynamique & JSON parser                     │
+   │  • Middleware sentinelle `protect` : vérification JWT stateless            │
+   │  • Hachage bcryptjs (Salt rounds: 10)                                      │
+   │  • Modèles Mongoose relationnels avec `.populate()` 1:N                    │
+   └──────────────────────────────────────┬─────────────────────────────────────┘
+                                          │
+                                          │ Pilote Mongoose (TLS/SSL)
+                                          ▼
+   ┌────────────────────────────────────────────────────────────────────────────┐
+   │                     BASE DE DONNÉES (MongoDB Atlas)                        │
+   │  • Collections : `users`, `projects`, `tasks`                              │
+   │  • Mode résilient automatique (fallback en mémoire si Atlas indisponible)  │
+   └────────────────────────────────────────────────────────────────────────────┘
 ```
-
-**Relations :**
-- `User` → `Project` : 1:N via `createdBy`
-- `Project` → `Task` : 1:N via `project`
-- `User` → `Task` : 1:N via `assignedTo`
-- Peuplement : `.populate('createdBy')` sur projets, double `.populate()` sur tâches
 
 ---
 
-## 🚀 Démarrage Local
+## 🗃️ Schéma des Modèles Mongoose & Relations 1:N
 
-### Prérequis
-- Node.js ≥ 18 / npm ≥ 9
-- (Optionnel) Cluster MongoDB Atlas gratuit M0
+```
+┌──────────────────────────────────────┐
+│                USER                  │
+├──────────────────────────────────────┤
+│ _id         : ObjectId               │
+│ name        : String                 │
+│ email       : String (unique)        │
+│ password    : String (hash bcrypt)   │
+│ role        : String (Admin / Chef)  │
+│ department  : String                 │
+└──────────────────┬───────────────────┘
+                   │ 1:N (createdBy)
+                   ▼
+┌──────────────────────────────────────┐
+│               PROJECT                │
+├──────────────────────────────────────┤
+│ _id         : ObjectId               │
+│ title       : String                 │
+│ description : String                 │
+│ status      : String (En cours...)   │
+│ priority    : String (Haute/Moyenne) │
+│ budget      : Number                 │
+│ startDate   : Date                   │
+│ endDate     : Date                   │
+│ createdBy   : ObjectId ──► Ref: User │
+└──────────────────┬───────────────────┘
+                   │ 1:N (project)
+                   ▼
+┌──────────────────────────────────────┐
+│                TASK                  │
+├──────────────────────────────────────┤
+│ _id         : ObjectId               │
+│ title       : String                 │
+│ description : String                 │
+│ status      : String (A faire...)    │
+│ priority    : String                 │
+│ dueDate     : Date                   │
+│ project     : ObjectId ──► Ref: Proj │
+│ assignedTo  : ObjectId ──► Ref: User │
+└──────────────────────────────────────┘
+```
+
+**Relations clés & Peuplement :**
+- `User` ──► `Project` : 1:N via le champ `createdBy` (peuplé avec `.populate('createdBy', 'name email role')`).
+- `Project` ──► `Task` : 1:N via le champ `project` (cascade automatique à la suppression d'un projet).
+- `User` ──► `Task` : 1:N via le champ `assignedTo` (double peuplement projet + assigné).
+
+---
+
+## 🔐 Comptes de Démonstration
+
+Le serveur initialise automatiquement des données de test si la base est vide :
+
+| Rôle | Email | Mot de passe | Permissions |
+|------|-------|-------------|-------------|
+| **Administrateur** | `sayarsiwar@polytechnicien.tn` | `123456` | Gestion globale, création/suppression |
+| **Chef de Projet** | `fawzelhouda.ghalba@polytechnicien.tn` | `123456` | Création de projets, assignation de tâches |
+| **Développeur** | `user@poly.tn` | `123456` | Mise à jour de statut, consultation |
+
+---
+
+## 🚀 Guide de Déploiement Vercel (Frontend)
+
+Ce projet est prêt à être déployé sur **Vercel** de deux façons équivalentes :
+
+### Méthode 1 : Déploiement automatique depuis GitHub (Recommandée)
+
+1. Rendez-vous sur votre dashboard [Vercel](https://vercel.com/new).
+2. Cliquez sur **"Add New..."** ➔ **"Project"**.
+3. Importez le dépôt GitHub : `FawzElHouda/GESTION-D-ENTREPRISE-MERN-PROJECT`.
+4. Configurez le projet :
+   - **Framework Preset :** `Vite`
+   - **Root Directory :** `./` (ou sélectionnez `client`)
+   - **Build Command :** `cd client && npm install && npm run build` (détecté automatiquement via `vercel.json`)
+   - **Output Directory :** `client/dist` (détecté automatiquement via `vercel.json`)
+5. Ajoutez la variable d'environnement (**Environment Variables**) :
+   - **Name :** `VITE_API_URL`
+   - **Value :** `https://gestion-d-entreprise-mern-project.onrender.com/api`
+6. Cliquez sur **Deploy**.
+
+> 💡 **Remarque sur le proxy Vercel :**  
+> Les fichiers `vercel.json` à la racine et dans `client/` contiennent une règle de réécriture (`rewrites`) redirigeant automatiquement toute requête `/api/*` vers Render. Même sans variable d'environnement, l'application fonctionnera sans aucun problème de CORS !
+
+---
+
+## ☁️ Guide de Déploiement Render (Backend)
+
+1. Connectez-vous sur [Render.com](https://dashboard.render.com).
+2. Cliquez sur **"New +"** ➔ **"Web Service"**.
+3. Connectez le dépôt : `FawzElHouda/GESTION-D-ENTREPRISE-MERN-PROJECT`.
+4. Renseignez les paramètres suivants :
+   - **Name :** `gestion-d-entreprise-mern-project`
+   - **Region :** Frankfurt (EU) ou Oregon (US)
+   - **Branch :** `main`
+   - **Root Directory :** `server`
+   - **Runtime :** `Node`
+   - **Build Command :** `npm install`
+   - **Start Command :** `node server.js`
+5. Ajoutez les variables d'environnement (**Environment Variables**) :
+   - `PORT` = `5001`
+   - `MONGODB_URI` = `mongodb+srv://<user>:<password>@<cluster>.mongodb.net/entreprise?retryWrites=true&w=majority`
+   - `JWT_SECRET` = `une_cle_secrete_longue_et_aleatoire_jwt`
+   - `CLIENT_URL` = `https://gestion-d-entreprise-mern-project.vercel.app`
+
+---
+
+## 💻 Installation & Démarrage en Local
 
 ### 1. Cloner le projet
 
 ```bash
-git clone git@github.com:FawzElHouda/GESTION-D-ENTREPRISE-MERN-PROJECT.git
+git clone https://github.com/FawzElHouda/GESTION-D-ENTREPRISE-MERN-PROJECT.git
 cd GESTION-D-ENTREPRISE-MERN-PROJECT
 ```
 
-### 2. Installer les dépendances
+### 2. Configurer les variables d'environnement
 
-```bash
-npm --prefix server install
-npm --prefix client install
-```
-
-### 3. Configurer l'environnement serveur
-
-```bash
-cp server/.env.example server/.env
-```
-
-Édite `server/.env` :
+Créer le fichier `server/.env` :
 
 ```env
 PORT=5001
 MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/entreprise
-JWT_SECRET=un_secret_fort_et_long
+JWT_SECRET=super_secret_jwt_key_pour_test_local_2026
 CLIENT_URL=http://localhost:5173
 ```
 
-> ⚡ **Sans `MONGODB_URI`**, le serveur démarre automatiquement en **mode mémoire** avec des données de démo — aucune installation MongoDB requise.
+*(Optionnel)* Créer le fichier `client/.env` :
 
-### 4. Lancer le backend
-
-```bash
-npm --prefix server start
-# → http://localhost:5001/api
+```env
+VITE_API_URL=http://localhost:5001/api
 ```
 
-### 5. Lancer le frontend
+### 3. Installer les dépendances & lancer l'application
 
+**Lancer le backend :**
 ```bash
-npm --prefix client run dev
-# → http://localhost:5173
+cd server
+npm install
+npm start
+# 📡 Backend actif sur http://localhost:5001/api
+```
+
+**Lancer le frontend :**
+```bash
+cd ../client
+npm install
+npm run dev
+# 💻 Frontend actif sur http://localhost:5173
 ```
 
 ---
 
-## 🔐 Comptes de Test
+## 🌐 Endpoints de l'API REST
 
-| Email | Mot de passe | Rôle |
-|-------|-------------|------|
-| `sayarsiwar@polytechnicien.tn` | `123456` | Admin |
-| `fawzelhouda.ghalba@polytechnicien.tn` | `123456` | Chef de Projet |
-| `user@poly.tn` | `123456` | Développeur |
+### Authentification (`/api/auth`)
+| Méthode | Route | Auth requise | Description |
+|---------|-------|--------------|-------------|
+| `POST` | `/api/auth/register` | ❌ Non | Inscription d'un nouvel utilisateur |
+| `POST` | `/api/auth/login` | ❌ Non | Connexion, retourne token JWT et profil |
+| `GET` | `/api/auth/me` | 🔒 JWT (`Bearer`) | Récupération du profil connecté |
 
----
+### Projets (`/api/projects`)
+| Méthode | Route | Auth requise | Description |
+|---------|-------|--------------|-------------|
+| `GET` | `/api/projects` | ❌ Non | Liste de tous les projets avec créateur |
+| `GET` | `/api/projects/:id` | ❌ Non | Détails complets d'un projet |
+| `POST` | `/api/projects` | 🔒 JWT (`Bearer`) | Créer un nouveau projet (rattaché à `req.user.id`) |
+| `PUT` | `/api/projects/:id` | 🔒 JWT (`Bearer`) | Modifier un projet existant |
+| `DELETE` | `/api/projects/:id` | 🔒 JWT (`Bearer`) | Supprimer un projet + suppression en cascade des tâches |
 
-## 🧪 Tests Automatisés (Backend)
+### Tâches (`/api/tasks`)
+| Méthode | Route | Auth requise | Description |
+|---------|-------|--------------|-------------|
+| `GET` | `/api/tasks` | ❌ Non | Liste des tâches (filtre optionnel `?projectId=...`) |
+| `POST` | `/api/tasks` | 🔒 JWT (`Bearer`) | Créer une tâche liée à un projet et un assigné |
+| `PUT` | `/api/tasks/:id` | 🔒 JWT (`Bearer`) | Modifier le statut ou les informations d'une tâche |
+| `DELETE` | `/api/tasks/:id` | 🔒 JWT (`Bearer`) | Supprimer une tâche |
 
-```bash
-npm --prefix server test
-```
-
-**9 tests validés :**
-
-| # | Test | Résultat |
-|---|------|----------|
-| 1 | Healthcheck | ✅ 200 |
-| 2 | Connexion JWT (Siwar Sayar) | ✅ 200 |
-| 3 | Inscription bcrypt | ✅ 201 |
-| 4 | Lecture projets avec `.populate('createdBy')` | ✅ 200 |
-| 5 | Création projet (protégé JWT) | ✅ 201 |
-| 6 | Lecture tâches — double `.populate()` | ✅ 200 |
-| 7 | Création tâche 1:N (protégée JWT) | ✅ 201 |
-| 8 | Modification statut (PUT) | ✅ 200 |
-| 9 | Suppression projet + cascade tâches (DELETE) | ✅ 200 |
-
----
-
-## 🌐 Endpoints API
-
-### Authentification
-| Méthode | Route | Auth | Description |
-|---------|-------|------|-------------|
-| POST | `/api/auth/register` | ❌ | Inscription |
-| POST | `/api/auth/login` | ❌ | Connexion → JWT |
-| GET | `/api/auth/me` | 🔒 JWT | Profil connecté |
-
-### Projets
-| Méthode | Route | Auth | Description |
-|---------|-------|------|-------------|
-| GET | `/api/projects` | ❌ | Liste tous (populate creator) |
-| GET | `/api/projects/:id` | ❌ | Détail d'un projet |
-| POST | `/api/projects` | 🔒 JWT | Créer un projet |
-| PUT | `/api/projects/:id` | 🔒 JWT | Modifier |
-| DELETE | `/api/projects/:id` | 🔒 JWT | Supprimer + cascade tâches |
-
-### Tâches
-| Méthode | Route | Auth | Description |
-|---------|-------|------|-------------|
-| GET | `/api/tasks` | ❌ | Liste (`?projectId=` pour filtrer) |
-| POST | `/api/tasks` | 🔒 JWT | Créer une tâche |
-| PUT | `/api/tasks/:id` | 🔒 JWT | Modifier statut |
-| DELETE | `/api/tasks/:id` | 🔒 JWT | Supprimer |
-
-### Utilisateurs
-| Méthode | Route | Auth | Description |
-|---------|-------|------|-------------|
-| GET | `/api/users` | ❌ | Liste (sélecteur d'assigné) |
+### Utilisateurs (`/api/users`)
+| Méthode | Route | Auth requise | Description |
+|---------|-------|--------------|-------------|
+| `GET` | `/api/users` | ❌ Non | Liste des collaborateurs pour l'assignation |
 
 ---
 
-## 🏗️ Structure du Projet
+## 📁 Structure du Répertoire
 
 ```
 GESTION-D-ENTREPRISE-MERN-PROJECT/
-├── client/                   # React 19 + Vite + Redux Toolkit
+├── client/                     # Application Front-End React 19
+│   ├── public/                 # Assets statiques
 │   ├── src/
 │   │   ├── api/
-│   │   │   └── axiosClient.js        # Intercepteur JWT automatique
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── AuthCard.jsx
-│   │   │   ├── DashboardStats.jsx
-│   │   │   ├── ProjectCard.jsx
-│   │   │   ├── ProjectForm.jsx
-│   │   │   ├── ProjectList.jsx
-│   │   │   ├── TaskCard.jsx
-│   │   │   ├── TaskForm.jsx
-│   │   │   └── TaskList.jsx
-│   │   ├── redux/
-│   │   │   ├── store.js
-│   │   │   ├── authSlice.js
-│   │   │   ├── projectSlice.js
-│   │   │   └── taskSlice.js
-│   │   └── App.jsx
-│   └── package.json
-├── server/                   # Node.js + Express + Mongoose
+│   │   │   └── axiosClient.js  # Client Axios + Injection automatique JWT Bearer
+│   │   ├── components/         # Composants UI (Navbar, Cards, Modals, Forms)
+│   │   ├── redux/              # Store Redux Toolkit & Slices (auth, project, task)
+│   │   ├── App.jsx             # Composant racine
+│   │   └── main.jsx            # Point d'entrée React 19
+│   ├── package.json
+│   ├── vercel.json             # Configuration de redirection SPA pour Vercel
+│   └── vite.config.js
+├── server/                     # Application Back-End Express + Mongoose
 │   ├── config/
-│   │   ├── db.js             # Connexion MongoDB (résiliente)
-│   │   └── seed.js           # Données initiales
-│   ├── data/
-│   │   └── memoryStore.js    # Fallback sans MongoDB
+│   │   ├── db.js               # Connexion résiliente MongoDB Atlas
+│   │   └── seed.js             # Initialisation des données de démo
 │   ├── middleware/
-│   │   └── authMiddleware.js # Middleware JWT protect
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── Project.js
-│   │   └── Task.js
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── projectRoutes.js
-│   │   ├── taskRoutes.js
-│   │   └── userRoutes.js
-│   ├── server.js
-│   ├── test-api.js           # Suite de 9 tests automatisés
-│   └── package.json
-├── vercel.json               # Config déploiement Vercel
-└── README.md
+│   │   └── authMiddleware.js   # Sentinelle de protection JWT (Bearer token)
+│   ├── models/                 # Modèles Mongoose (User, Project, Task)
+│   ├── routes/                 # Routes REST modulaires (auth, projects, tasks, users)
+│   ├── server.js               # Serveur HTTP Express & configuration CORS
+│   └── test-api.js             # Suite de 9 tests automatisés
+├── vercel.json                 # Configuration racine de build & rewrites Vercel
+├── package.json                # Scripts npm globaux
+└── README.md                   # Documentation complète
 ```
 
 ---
 
-## ☁️ Déploiement Production
+## 🎓 Évaluation & Soutenance
 
-### Base de données → MongoDB Atlas
-1. Créer un cluster gratuit **M0** sur [cloud.mongodb.com](https://cloud.mongodb.com)
-2. Whitelist `0.0.0.0/0` dans Network Access
-3. Créer un utilisateur DB et copier la connection string
-
-### Backend → Render.com
-1. New Web Service → connecter ce repo GitHub
-2. **Root Directory :** `server`
-3. **Build Command :** `npm install`
-4. **Start Command :** `node server.js`
-5. Variables d'environnement :
-   - `MONGODB_URI` = ta connection string Atlas
-   - `JWT_SECRET` = clé secrète longue et aléatoire
-   - `CLIENT_URL` = URL Vercel du frontend
-
-### Frontend → Vercel
-1. New Project → connecter ce repo GitHub
-2. **Framework :** Vite
-3. **Root Directory :** `client`
-4. Variable d'environnement :
-   - `VITE_API_URL` = `https://ton-backend.onrender.com/api`
-
----
-
-## 🛡️ Sécurité
-
-| Mécanisme | Détail |
-|-----------|--------|
-| **JWT** | Tokens stateless, expiration 7 jours |
-| **bcryptjs** | Hachage mot de passe, salt rounds = 10 |
-| **Middleware `protect`** | Vérifie `Authorization: Bearer <token>` |
-| **Mode résilient** | Pas de crash si MongoDB indisponible |
-
----
-
-## 📦 Stack Technique
-
-| Couche | Technologies |
-|--------|-------------|
-| **Frontend** | React 19, Vite 8, Redux Toolkit, Axios |
-| **Styling** | CSS Variables, Grid/Flexbox (sans framework CSS) |
-| **Backend** | Node.js, Express 4 |
-| **Base de données** | MongoDB + Mongoose |
-| **Auth** | JWT (jsonwebtoken) + bcryptjs |
-| **Déploiement** | Vercel + Render + MongoDB Atlas |
+Projet réalisé dans le cadre du module **Architecture MERN Décalée - Séance 6** à l'**École Polytechnique de Sousse**, sous la direction de **Dr. Abdelweheb GUEDDES**.

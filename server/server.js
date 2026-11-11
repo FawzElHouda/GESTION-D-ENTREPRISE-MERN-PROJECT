@@ -20,7 +20,10 @@ const PORT = process.env.PORT || 5001;
 // ==============================================================================
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || '*',
+    origin: (origin, callback) => {
+      // Autorise les requêtes sans origine (curl, mobile, tests) et toutes les origines (Vercel, localhost, etc.)
+      callback(null, true);
+    },
     credentials: true
   })
 );
