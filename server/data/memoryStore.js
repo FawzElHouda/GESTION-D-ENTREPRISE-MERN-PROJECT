@@ -1,10 +1,11 @@
-const bcrypt = require('bcryptjs');
-
 // ==============================================================================
 // DONNÉES EN MÉMOIRE (Mode Résilient Hors-Ligne / Fallback)
 // Permet d'exécuter et tester le projet sans configuration préalable de MongoDB Atlas.
 // Dès que MONGODB_URI est connecté, Mongoose prend le relais directement.
 // ==============================================================================
+
+// Hash bcrypt pré-calculé de '123456' (salt rounds=10) — évite le blocage synchrone au démarrage
+const HASH_123456 = '$2b$10$PblhHnaqIDzbuL/jwp8ne.RhE2EGKYvLsDT9sBnWd6HbpAo82wuHO';
 
 const memoryUsers = [
   {
@@ -12,7 +13,7 @@ const memoryUsers = [
     id: '65e9b1f2a3c4d5e6f7a8b901',
     name: 'Siwar Sayar',
     email: 'sayarsiwar@polytechnicien.tn',
-    password: bcrypt.hashSync('123456', 10),
+    password: HASH_123456,
     role: 'Admin',
     department: 'Direction',
     createdAt: new Date('2026-10-01T08:00:00Z').toISOString()
@@ -22,7 +23,7 @@ const memoryUsers = [
     id: '65e9b1f2a3c4d5e6f7a8b902',
     name: 'Fawz El Houda Ghalba',
     email: 'fawzelhouda.ghalba@polytechnicien.tn',
-    password: bcrypt.hashSync('123456', 10),
+    password: HASH_123456,
     role: 'Chef de Projet',
     department: 'Ingénierie & IT',
     createdAt: new Date('2026-10-02T09:00:00Z').toISOString()
@@ -32,7 +33,7 @@ const memoryUsers = [
     id: '65e9b1f2a3c4d5e6f7a8b903',
     name: 'Utilisateur Poly',
     email: 'user@poly.tn',
-    password: bcrypt.hashSync('123456', 10),
+    password: HASH_123456,
     role: 'Développeur',
     department: 'Ingénierie & IT',
     createdAt: new Date('2026-10-03T10:00:00Z').toISOString()
